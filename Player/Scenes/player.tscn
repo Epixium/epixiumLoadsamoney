@@ -1201,6 +1201,7 @@ process_material = SubResource("ParticleProcessMaterial_f30n8")
 texture = ExtResource("22_wiiqt")
 fixed_fps = 0
 interpolate = false
+visibility_rect = Rect2(-960, -540, 1920, 1080)
 
 [node name="StateContainer" type="VBoxContainer" parent="."]
 offset_left = -100.0

@@ -12,7 +12,7 @@ var collected_objects = []
 func _ready():
 	GameState.num_collectibles_changed.connect(on_collect_given)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("pause"):
 		get_tree().paused = !get_tree().paused
 		PauseScreen.visible = !PauseScreen.visible

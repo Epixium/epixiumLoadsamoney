@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://c8x41ifbeowq1"]
+
+[ext_resource type="Script" path="res://Objects/Hidden Area/hidden_area.gd" id="1_elmmb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g33t5"]
+resource_local_to_scene = true
+size = Vector2(10, 10)
+
+[node name="HiddenArea" type="Area2D"]
+collision_layer = 2
+script = ExtResource("1_elmmb")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_g33t5")
+debug_color = Color(0, 0.623036, 0.541057, 0.42)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
