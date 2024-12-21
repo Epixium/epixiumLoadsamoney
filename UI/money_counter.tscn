@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3 uid="uid://bg1vo18s3x22y"]
+
+[ext_resource type="Script" path="res://UI/money_counter.gd" id="1_eo7ud"]
+[ext_resource type="PackedScene" uid="uid://cylwffki2e0h3" path="res://UI/money_digit.tscn" id="1_ggcx4"]
+[ext_resource type="Texture2D" uid="uid://u710x7jf8e25" path="res://UI/money_nums.png" id="1_sxpa8"]
+[ext_resource type="Texture2D" uid="uid://poi2yb62mswj" path="res://UI/money_dollar.png" id="2_1eevl"]
+[ext_resource type="Texture2D" uid="uid://fxoc2hflfbvi" path="res://UI/money_point.png" id="4_07fkt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r2ktc"]
+resource_local_to_scene = true
+atlas = ExtResource("1_sxpa8")
+region = Rect2(0, 0, 80, 96)
+
+[node name="MoneyCounter" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = -8
+script = ExtResource("1_eo7ud")
+
+[node name="Dollar Sign" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_1eevl")
+
+[node name="Digit" parent="." instance=ExtResource("1_ggcx4")]
+layout_mode = 2
+texture = SubResource("AtlasTexture_r2ktc")
+
+[node name="Point" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("4_07fkt")

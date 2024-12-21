@@ -1,0 +1,72 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3yod72qjrsp5"]
+
+[ext_resource type="Texture2D" uid="uid://86ls07w20013" path="res://Player/Sprites/crawl.png" id="2_ifa00"]
+[ext_resource type="PackedScene" uid="uid://c6t2voml0xwid" path="res://UI/UI Helpers/scene_button.tscn" id="3_ypj4y"]
+
+[node name="Title" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="epium" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_ifa00")
+
+[node name="Dark BG" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.501961)
+
+[node name="Important" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Important"]
+layout_mode = 2
+
+[node name="Title" type="RichTextLabel" parent="Important/VBoxContainer"]
+clip_contents = false
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(1, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/normal_font_size = 64
+theme_override_font_sizes/bold_font_size = 64
+bbcode_enabled = true
+text = "[b]EPIXIUMGAME: THE BAREBONES THING[/b]"
+fit_content = true
+
+[node name="TestMap" parent="Important/VBoxContainer" instance=ExtResource("3_ypj4y")]
+layout_mode = 2
+text = "play the test map"
+scene = "res://map.tscn"
+
+[node name="RetroLand" parent="Important/VBoxContainer" instance=ExtResource("3_ypj4y")]
+layout_mode = 2
+text = "play retroland"
+scene = "res://retro_land.tscn"
+
+[node name="Settings" parent="Important/VBoxContainer" instance=ExtResource("3_ypj4y")]
+layout_mode = 2
+text = "play the... settings..?"
+scene = "res://settings.tscn"

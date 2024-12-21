@@ -1,0 +1,116 @@
+[gd_scene load_steps=8 format=3 uid="uid://dtkvjytmev2xy"]
+
+[ext_resource type="Script" path="res://Objects/Question Block/question_block.gd" id="1_b7h3p"]
+[ext_resource type="Texture2D" uid="uid://0txihofth67y" path="res://Objects/Question Block/questionblock.png" id="2_khcaf"]
+[ext_resource type="PackedScene" uid="uid://c24bwngdpulw4" path="res://Tile Modifiers/Breakables/Breakable/Breakable.tscn" id="3_prwu5"]
+
+[sub_resource type="Animation" id="Animation_45454"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_khcaf")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_1lpme"]
+resource_name = "flash"
+length = 0.5
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_khcaf")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.2, 0.35, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 1, 0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_08kkn"]
+_data = {
+"RESET": SubResource("Animation_45454"),
+"flash": SubResource("Animation_1lpme")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0250s"]
+size = Vector2(32, 32)
+
+[node name="QuestionBlock" type="StaticBody2D"]
+collision_layer = 2
+script = ExtResource("1_b7h3p")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_khcaf")
+hframes = 3
+
+[node name="Animation" type="AnimationPlayer" parent="Sprite"]
+libraries = {
+"": SubResource("AnimationLibrary_08kkn")
+}
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_0250s")
+
+[node name="Breakable" parent="." instance=ExtResource("3_prwu5")]
+script = null
+
+[connection signal="area_entered" from="Breakable" to="." method="_on_area_entered"]

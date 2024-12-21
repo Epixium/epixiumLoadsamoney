@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7f47kx2mbtrg"]
+
+[ext_resource type="Texture2D" uid="uid://djaxoqm23wbgx" path="res://UI/health_hearts.png" id="1_pyq2o"]
+[ext_resource type="Script" path="res://UI/health_heart.gd" id="2_4cijd"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_60883"]
+resource_local_to_scene = true
+atlas = ExtResource("1_pyq2o")
+region = Rect2(64, 0, 64, 64)
+
+[node name="HealthHeart" type="TextureRect" groups=["HealthHeart"]]
+offset_right = 64.0
+offset_bottom = 64.0
+texture = SubResource("AtlasTexture_60883")
+script = ExtResource("2_4cijd")
+type = 1

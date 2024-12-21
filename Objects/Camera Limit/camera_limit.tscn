@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3 uid="uid://d05sdth4yllbt"]
+
+[ext_resource type="Script" path="res://Objects/Camera Limit/camera_limit.gd" id="1_6tagl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7yaa"]
+resource_local_to_scene = true
+size = Vector2(200, 200)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4mesh"]
+resource_local_to_scene = true
+size = Vector2(400, 400)
+
+[node name="CameraLimit" type="Node2D"]
+script = ExtResource("1_6tagl")
+
+[node name="Lock" type="Area2D" parent="."]
+position = Vector2(-100, -100)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="Lock"]
+position = Vector2(100, 100)
+shape = SubResource("RectangleShape2D_q7yaa")
+debug_color = Color(1, 0, 0, 0)
+
+[node name="Range" type="Area2D" parent="."]
+position = Vector2(-200, -200)
+collision_layer = 2
+
+[node name="Shape" type="CollisionShape2D" parent="Range"]
+position = Vector2(200, 200)
+shape = SubResource("RectangleShape2D_4mesh")
+debug_color = Color(0, 0.599971, 0.694343, 0)
+
+[connection signal="body_entered" from="Range" to="." method="_on_ref_body_entered"]
+[connection signal="body_exited" from="Range" to="." method="_on_ref_body_exited"]

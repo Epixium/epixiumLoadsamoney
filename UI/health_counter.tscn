@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://cblvcsmtq1q46"]
+
+[ext_resource type="Script" path="res://UI/health_counter.gd" id="1_kfebs"]
+[ext_resource type="PackedScene" uid="uid://c7f47kx2mbtrg" path="res://UI/health_heart.tscn" id="2_2wxx4"]
+[ext_resource type="Texture2D" uid="uid://djaxoqm23wbgx" path="res://UI/health_hearts.png" id="3_ouy7r"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f8tks"]
+resource_local_to_scene = true
+atlas = ExtResource("3_ouy7r")
+region = Rect2(0, 0, 64, 64)
+
+[node name="HealthCounter" type="HBoxContainer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -112.0
+offset_bottom = 64.0
+grow_horizontal = 0
+theme_override_constants/separation = -16
+alignment = 2
+script = ExtResource("1_kfebs")
+
+[node name="HealthHeart" parent="." instance=ExtResource("2_2wxx4")]
+layout_mode = 2
+texture = SubResource("AtlasTexture_f8tks")
+type = 0

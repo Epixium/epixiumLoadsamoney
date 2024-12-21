@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://j43ch88v4l48"]
+
+[ext_resource type="Script" path="res://UI/UI Helpers/Audio Slider/audio_slider.gd" id="1_ifqbn"]
+
+[node name="AudioSlider" type="HSlider"]
+max_value = 1.0
+step = 0.0
+script = ExtResource("1_ifqbn")

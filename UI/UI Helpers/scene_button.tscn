@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://c6t2voml0xwid"]
+
+[ext_resource type="Script" path="res://UI/UI Helpers/scene_button.gd" id="1_eynq8"]
+
+[node name="Button" type="Button"]
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 32
+text = "Go to Scene"
+script = ExtResource("1_eynq8")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

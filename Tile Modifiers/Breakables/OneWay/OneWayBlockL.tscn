@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxcehwntopuv6"]
+
+[ext_resource type="PackedScene" uid="uid://ckn1l4pmlkeff" path="res://Tile Modifiers/Breakables/OneWay/OneWayBlock.tscn" id="1_pwptb"]
+
+[node name="OneWayBlock" instance=ExtResource("1_pwptb")]
+direction = "Left"

@@ -1,0 +1,134 @@
+[gd_scene load_steps=7 format=3 uid="uid://38yr828ov8b3"]
+
+[ext_resource type="Shader" path="res://wavygravy.gdshader" id="1_r5l0y"]
+[ext_resource type="Texture2D" uid="uid://c1fnpj07per6s" path="res://settings.png" id="2_mndni"]
+[ext_resource type="PackedScene" uid="uid://j43ch88v4l48" path="res://UI/UI Helpers/Audio Slider/audio_slider.tscn" id="3_kslow"]
+[ext_resource type="PackedScene" uid="uid://cgna8ediwj4rq" path="res://UI/UI Helpers/remap_button.tscn" id="4_0na8r"]
+[ext_resource type="PackedScene" uid="uid://c6t2voml0xwid" path="res://UI/UI Helpers/scene_button.tscn" id="5_d0eob"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cc7e4"]
+shader = ExtResource("1_r5l0y")
+shader_parameter/direction = Vector2(-0.2, 0.1)
+shader_parameter/wobble_speed = 0.5
+shader_parameter/wavelength = Vector2(64, 64)
+shader_parameter/amplitude = Vector2(8, 8)
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_cc7e4")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_mndni")
+stretch_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 128
+theme_override_constants/margin_top = 128
+theme_override_constants/margin_right = 128
+theme_override_constants/margin_bottom = 128
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MasterT" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+clip_contents = false
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/normal_font_size = 32
+text = "master volume"
+fit_content = true
+scroll_active = false
+
+[node name="Master" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_kslow")]
+layout_mode = 2
+bus_name = "Master"
+
+[node name="MasterT2" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+clip_contents = false
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/normal_font_size = 32
+text = "sfx volume (aka the only type)"
+fit_content = true
+scroll_active = false
+
+[node name="SFX" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_kslow")]
+layout_mode = 2
+bus_name = "SFX"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RemapButton" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_0na8r")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "A"
+coolname = "Left"
+action = "move_left"
+
+[node name="RemapButton2" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_0na8r")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "D"
+coolname = "Right"
+action = "move_right"
+
+[node name="RemapButton3" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_0na8r")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "W"
+coolname = "Up"
+action = "move_up"
+
+[node name="RemapButton4" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_0na8r")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "S"
+coolname = "Down"
+action = "move_down"
+
+[node name="RemapButton5" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_0na8r")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+coolname = "Jump"
+action = "jump"
+
+[node name="RemapButton6" parent="MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("4_0na8r")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "UP"
+coolname = "Dash"
+action = "dash"
+
+[node name="Button" parent="MarginContainer/VBoxContainer" instance=ExtResource("5_d0eob")]
+layout_mode = 2
+text = "main menu"
+scene = "res://title_screen.tscn"

@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://cylwffki2e0h3"]
+
+[ext_resource type="Texture2D" uid="uid://u710x7jf8e25" path="res://UI/money_nums.png" id="1_0ukk5"]
+[ext_resource type="Script" path="res://UI/money_digit.gd" id="2_e104u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hyubr"]
+resource_local_to_scene = true
+atlas = ExtResource("1_0ukk5")
+region = Rect2(0, 0, 80, 96)
+
+[node name="Digit" type="TextureRect" groups=["MoneyDigit"]]
+texture = SubResource("AtlasTexture_hyubr")
+script = ExtResource("2_e104u")

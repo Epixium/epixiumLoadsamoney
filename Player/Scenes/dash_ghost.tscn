@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://bdoyv37e0ofmn"]
+
+[ext_resource type="Texture2D" uid="uid://c52h07oto8lep" path="res://icon.svg" id="1_5rees"]
+[ext_resource type="Script" path="res://Player/Scripts/dash_ghost.gd" id="1_473at"]
+[ext_resource type="Material" uid="uid://dcu60yqoj8tyx" path="res://Player/color_change_shader.tres" id="1_hg4bh"]
+
+[node name="DashGhost" type="Sprite2D"]
+modulate = Color(0, 1, 1, 1)
+z_index = -1
+material = ExtResource("1_hg4bh")
+texture = ExtResource("1_5rees")
+offset = Vector2(0, -30)
+script = ExtResource("1_473at")
