@@ -56,6 +56,8 @@ enum X_STATES {IDLE, CROUCHING, WALKING, CRAWLING, TURNING, AIRDASHING, SLIDEKIC
 var x_state = X_STATES.IDLE
 enum Y_STATES {FLOORED, FALLING, WALLSLIDING, JUMPING, WALLJUMPING, DRILLING}
 var y_state = Y_STATES.FLOORED
+enum SPECIAL_STATES {NONE, ZIPLINING}
+var special_state = SPECIAL_STATES.NONE
 
 var input_axis
 var dir_faced := 1
@@ -63,12 +65,16 @@ var floor_normal
 var wall_normal
 var buffer_frames = 60
 var speed_scale := 1.0
+var just_on_wall := false
+var still_on_wall := false
 
 var velocity_locked := false
+var gravity_applied := true
 var acceleration_applied := true
 var friction_applied := true
 var x_state_locked := false
 var y_state_locked := false
+var special_state_locked := false
 var anim_locked := false
 var sprite_dir_locked := false
 var can_turn := true
@@ -89,7 +95,14 @@ func _physics_process(delta):
 	if is_on_floor(): EpixSprite.rotation = get_floor_angle(Vector2(0, -1))
 	else: EpixSprite.rotation = 0
 	
-	if get_x_state(X_STATES.CRAWLING):
+	if is_on_wall():
+		if just_on_wall: still_on_wall = true
+		just_on_wall = true
+	else:
+		just_on_wall = false
+		still_on_wall = false
+	
+	if get_x_state(X_STATES.CRAWLING) and get_special_state(SPECIAL_STATES.NONE):
 		AnimPlayer.speed_scale = speed_scale * dir_faced * (-1 if EpixSprite.flip_h else 1)
 	else:
 		AnimPlayer.speed_scale = speed_scale
@@ -129,7 +142,7 @@ func _physics_process(delta):
 		if get_y_state(Y_STATES.WALLSLIDING):
 			if velocity.y < 0: apply_gravity(delta)
 			else: wall_slide(delta)
-		else:
+		elif gravity_applied:
 			apply_gravity(delta)
 		if acceleration_applied:
 			apply_acceleration(delta)
@@ -140,7 +153,7 @@ func _physics_process(delta):
 	
 	if abs(velocity.x) > SPEED_THRESHOLD:
 		disable_collision(DashHitbox, false)
-		if is_on_floor() and (get_x_state(X_STATES.WALKING) or get_x_state(X_STATES.CRAWLING)):
+		if is_on_floor() and (get_x_state(X_STATES.WALKING) or get_x_state(X_STATES.CRAWLING)) and get_special_state(SPECIAL_STATES.NONE):
 			if !sfx_run.playing: sfx_run.play()
 			if !vfx_run_dust.emitting: vfx_run_dust.set_emitting(true)
 		else:
@@ -157,7 +170,7 @@ func _physics_process(delta):
 	else:
 		$DashHitbox.scale.x = 1
 	
-	if get_x_state(X_STATES.SLIDEKICKING) and abs(velocity.x) < SPEED_THRESHOLD:
+	if get_x_state(X_STATES.SLIDEKICKING) and abs(velocity.x) < SPEED_THRESHOLD and get_special_state(SPECIAL_STATES.NONE):
 		acceleration_applied = true
 		can_turn = true
 		anim_locked = false
@@ -225,7 +238,7 @@ func take_y_inputs():
 			return
 	elif Input.is_action_just_released("jump") or Input.is_action_just_released("move_up"):
 		cut_jump()
-	elif is_on_wall() and (abs(saved_velocity.x) > SPEED_THRESHOLD) and !get_y_state(Y_STATES.DRILLING):
+	elif is_on_wall() and (abs(saved_velocity.x) > SPEED_THRESHOLD) and !still_on_wall and !get_y_state(Y_STATES.DRILLING):
 		set_y_state(Y_STATES.WALLJUMPING)
 		wall_kick()
 		return
@@ -239,7 +252,7 @@ func take_y_inputs():
 		set_y_state(Y_STATES.FALLING)
 		disable_collision(JumpHitbox, true)
 		return
-	elif is_on_floor():
+	elif is_on_floor() or get_special_state(SPECIAL_STATES.ZIPLINING):
 		jumps = MAX_JUMPS
 		can_air_dash = true
 		AnimTree.set("parameters/jump_start/blend_position", 0)
@@ -341,6 +354,31 @@ func drill():
 	x_state_locked = false
 	velocity.y = DRILL_SPEED
 
+func zipline():
+	set_x_state(X_STATES.IDLE)
+	set_y_state(Y_STATES.FLOORED)
+	set_special_state(SPECIAL_STATES.ZIPLINING)
+	velocity = Vector2(0, 0)
+	velocity_locked = true
+	gravity_applied = false
+	acceleration_applied = false
+	friction_applied = false
+	x_state_locked = true
+	y_state_locked = false
+	special_state_locked = false
+	anim_locked = false
+	sprite_dir_locked = false
+	can_turn = false
+
+func stop_ziplining():
+	set_special_state(SPECIAL_STATES.NONE)
+	velocity_locked = false
+	gravity_applied = true
+	acceleration_applied = true
+	friction_applied = true
+	x_state_locked = false
+	can_turn = true
+
 # boring stuff that gets run every frame boooo BOOOOO
 
 func apply_gravity(delta):
@@ -379,6 +417,9 @@ func set_y_state(state):
 	y_state = state
 	YStateText.text = "[center]" + Y_STATES.keys()[state]
 
+func set_special_state(state):
+	special_state = state
+
 func get_x_state(state):
 	var is_state := false
 	if x_state == state: is_state = true
@@ -389,11 +430,18 @@ func get_y_state(state):
 	if y_state == state: is_state = true
 	return is_state
 
+func get_special_state(state):
+	var is_state := false
+	if special_state == state: is_state = true
+	return is_state
+
 func handle_animations():
 	if !sprite_dir_locked: match dir_faced:
 		-1: EpixSprite.flip_h = true
 		1: EpixSprite.flip_h = false
-	if get_x_state(X_STATES.AIRDASHING):
+	if get_special_state(SPECIAL_STATES.ZIPLINING):
+		move_to_anim("slidekick")
+	elif get_x_state(X_STATES.AIRDASHING):
 		move_to_anim("airdash")
 		add_ghost(Color(0.0, 1.0, 1.0, 1.0), Color(0.0, 0.0, 1.0, 0.0))
 	elif get_x_state(X_STATES.SLIDEKICKING):

@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://ce3u2v1374735"]
+
+[ext_resource type="Script" path="res://Objects/Zipline/zipline.gd" id="1_dekkb"]
+[ext_resource type="Texture2D" uid="uid://c3784o74yidh1" path="res://Objects/Zipline/zipline.png" id="2_jis3v"]
+[ext_resource type="Texture2D" uid="uid://c4ij87yfbugp8" path="res://Objects/Zipline/zipline_end.png" id="3_v0uoh"]
+
+[sub_resource type="Curve2D" id="Curve2D_u0nrn"]
+resource_local_to_scene = true
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0)
+}
+point_count = 2
+
+[node name="Zipline" type="Path2D" node_paths=PackedStringArray("Area", "TextureLine", "TextureStart", "TextureEnd")]
+curve = SubResource("Curve2D_u0nrn")
+script = ExtResource("1_dekkb")
+gravity = 1000.0
+Area = NodePath("Area")
+TextureLine = NodePath("Line")
+TextureStart = NodePath("Start")
+TextureEnd = NodePath("End")
+
+[node name="Line" type="Line2D" parent="."]
+texture_repeat = 2
+width = 32.0
+texture = ExtResource("2_jis3v")
+texture_mode = 1
+
+[node name="Start" type="Sprite2D" parent="."]
+texture = ExtResource("3_v0uoh")
+
+[node name="End" type="Sprite2D" parent="."]
+texture = ExtResource("3_v0uoh")
+
+[node name="Area" type="Area2D" parent="."]
+collision_layer = 2
+
+[connection signal="body_entered" from="Area" to="." method="_on_area_body_entered"]
