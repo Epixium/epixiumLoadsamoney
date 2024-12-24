@@ -30,7 +30,8 @@ var current_fill : Color
 @onready var SafeCastA = $SafeCastA
 @onready var SafeCastB = $SafeCastB
 @onready var FaceCast = $FaceCast
-@onready var EpixSprite = $EpixSprite
+@onready var PivotPoint = $PivotPoint
+@onready var EpixSprite = $PivotPoint/EpixSprite
 @onready var XStateText = $StateContainer/XState
 @onready var YStateText = $StateContainer/YState
 @onready var HeightState = 0
@@ -38,8 +39,8 @@ var current_fill : Color
 @onready var JumpHitbox = [$JumpHitbox/Collision, $JumpHitbox/CollisionShort]
 @onready var DashHitbox = [$DashHitbox/Collision, $DashHitbox/CollisionShort]
 @onready var DrillHitbox = [$DrillHitbox/Collision, $DrillHitbox/Collision]
-@onready var AnimPlayer = $EpixSprite/EpixAnim
-@onready var AnimTree = $EpixSprite/EpixTree
+@onready var AnimPlayer = $PivotPoint/EpixSprite/EpixAnim
+@onready var AnimTree = $PivotPoint/EpixSprite/EpixTree
 @onready var playback = AnimTree["parameters/playback"]
 @onready var AirTimer = $Timers/AirTimer
 @onready var sfx_run = $Run
@@ -92,8 +93,8 @@ func _physics_process(delta):
 	wall_normal = get_wall_normal()
 	above_threshold = abs(velocity.x) >= SPEED_THRESHOLD
 	
-	if is_on_floor(): EpixSprite.rotation = get_floor_angle(Vector2(0, -1))
-	else: EpixSprite.rotation = 0
+	if is_on_floor(): PivotPoint.rotation = get_floor_angle(Vector2(0, -1))
+	elif !get_special_state(SPECIAL_STATES.ZIPLINING): PivotPoint.rotation = 0
 	
 	if is_on_wall():
 		if just_on_wall: still_on_wall = true
@@ -194,9 +195,11 @@ func take_x_inputs():
 	elif input_axis != 0:
 		if (!is_on_floor() or !Input.is_action_pressed("move_down")) and (get_one_way(SafeCastA) and get_one_way(SafeCastB)):
 			if abs(velocity.x) > SPEED_THRESHOLD:
-				AnimTree.set("parameters/run/blend_position", 1)
+				if is_on_floor(): AnimTree.set("parameters/run/blend_position", 1)
+				else: AnimTree.set("parameters/run/blend_position", 3)
 			else:
-				AnimTree.set("parameters/run/blend_position", 0)
+				if is_on_floor(): AnimTree.set("parameters/run/blend_position", 0)
+				else: AnimTree.set("parameters/run/blend_position", 2)
 			sprite_dir_locked = false
 			change_height(0)
 			set_x_state(X_STATES.WALKING)
@@ -212,7 +215,8 @@ func take_x_inputs():
 	else:
 		if !Input.is_action_pressed("move_down") and (get_one_way(SafeCastA) and get_one_way(SafeCastB)):
 			sprite_dir_locked = false
-			AnimTree.set("parameters/idle/blend_position", 0)
+			if is_on_floor(): AnimTree.set("parameters/idle/blend_position", 0)
+			else: AnimTree.set("parameters/idle/blend_position", 1)
 			change_height(0)
 			set_x_state(X_STATES.IDLE)
 		else:
@@ -306,6 +310,8 @@ func wall_slide(delta):
 	velocity.y = min(WALL_SLIDE_MAX, velocity.y)
 
 func air_dash():
+	just_on_wall = false
+	still_on_wall = false
 	change_height(0)
 	disable_collision(DashHitbox, false)
 	disable_collision(DrillHitbox, true)
@@ -358,6 +364,8 @@ func zipline():
 	set_x_state(X_STATES.IDLE)
 	set_y_state(Y_STATES.FLOORED)
 	set_special_state(SPECIAL_STATES.ZIPLINING)
+	PivotPoint.position = Vector2(0, 0)
+	EpixSprite.position = Vector2(0, -38)
 	velocity = Vector2(0, 0)
 	velocity_locked = true
 	gravity_applied = false
@@ -367,16 +375,19 @@ func zipline():
 	y_state_locked = false
 	special_state_locked = false
 	anim_locked = false
-	sprite_dir_locked = false
+	sprite_dir_locked = true
 	can_turn = false
 
 func stop_ziplining():
 	set_special_state(SPECIAL_STATES.NONE)
+	PivotPoint.position = Vector2(0, -30)
+	EpixSprite.position = Vector2(0, 0)
 	velocity_locked = false
 	gravity_applied = true
 	acceleration_applied = true
 	friction_applied = true
 	x_state_locked = false
+	sprite_dir_locked = false
 	can_turn = true
 
 # boring stuff that gets run every frame boooo BOOOOO
@@ -440,7 +451,7 @@ func handle_animations():
 		-1: EpixSprite.flip_h = true
 		1: EpixSprite.flip_h = false
 	if get_special_state(SPECIAL_STATES.ZIPLINING):
-		move_to_anim("slidekick")
+		move_to_anim("zipline")
 	elif get_x_state(X_STATES.AIRDASHING):
 		move_to_anim("airdash")
 		add_ghost(Color(0.0, 1.0, 1.0, 1.0), Color(0.0, 0.0, 1.0, 0.0))
@@ -457,7 +468,7 @@ func handle_animations():
 		move_to_anim("jump")
 	elif get_y_state(Y_STATES.WALLSLIDING):
 		move_to_anim("wallslide")
-	elif get_y_state(Y_STATES.FALLING):
+	elif get_y_state(Y_STATES.FALLING) and jumps < MAX_JUMPS:
 		move_to_anim("fall")
 	elif get_x_state(X_STATES.WALKING):
 		move_to_anim("run")

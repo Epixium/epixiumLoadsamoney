@@ -16,8 +16,6 @@ var speed := 0.5
 @export var TextureStart : Sprite2D
 @export var TextureEnd : Sprite2D
 
-var last_position
-var last_last_position
 var followers = {}
 var snap_points = []
 var hasSpawnedPoints = true
@@ -28,8 +26,10 @@ func _ready() -> void:
 	update_line()
 	if !looping: 
 		TextureStart.position = curve.get_baked_points()[0]
+		TextureStart.rotation = randi_range(0, 3) * PI/2
 		TextureStart.show()
 		TextureEnd.position = curve.get_baked_points()[-1]
+		TextureEnd.rotation = randi_range(0, 3) * PI/2
 		TextureEnd.show()
 
 func _physics_process(delta):
@@ -37,19 +37,21 @@ func _physics_process(delta):
 		if !player.get_special_state(player.SPECIAL_STATES.ZIPLINING): continue
 		var follower = followers[player]
 		var base_angle = follower.rotation
-		if last_position: last_last_position = last_position
 		follower.rotation = get_opposite(follower.rotation)
-		last_position = follower.position
 		var vec_angle = Vector2.from_angle(follower.rotation) * gravity
 		speed = move_toward(speed, 0, friction * delta)
 		speed += abs(vec_angle.y) * delta * sign(base_angle)
 		follower.progress += speed * delta
 		player.global_position = follower.global_position
-		player.EpixSprite.rotation = follower.rotation
+		player.PivotPoint.rotation = get_opposite(follower.rotation)
 		
 		if (!looping and (follower.progress_ratio == 0 or follower.progress_ratio == 1)) or player.get_y_state(player.Y_STATES.JUMPING) or player.get_y_state(player.Y_STATES.WALLJUMPING) or player.get_y_state(player.Y_STATES.DRILLING) or player.is_on_wall():
-			player.velocity.x = (follower.position-last_position).x/delta
-			player.velocity.y = min(player.velocity.y, (follower.position-last_position).y/delta * abs(follower.rotation)/PI)
+			var fungus = Vector2.from_angle(follower.rotation) * speed
+			player.velocity.x = fungus.x
+			if !looping and (follower.progress_ratio == 0 or follower.progress_ratio == 1):
+				player.velocity.y = fungus.y
+			else:
+				player.velocity.y = min(player.velocity.y, fungus.y)
 			end_zipline(player)
 			player.stop_ziplining()
 
@@ -115,9 +117,8 @@ func _on_area_body_entered(body: Node2D) -> void:
 	
 	var mult = 1
 	if abs(followers[player].rotation) > PI/2: mult = -1
-	speed = player.velocity.x * mult + get_opposite(followers[player].rotation) * player.velocity.y
-	last_position = to_local(player.global_position)
-	last_last_position = to_local(player.global_position)
+	var thing = (player.velocity * Vector2.from_angle(get_opposite(followers[player].rotation))) * mult
+	speed = thing.x + thing.y
 	player.zipline()
-	print("FART!")
+	#print("FART!")
 	set_physics_process(true)
