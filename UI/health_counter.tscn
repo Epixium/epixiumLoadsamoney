@@ -20,6 +20,12 @@ theme_override_constants/separation = -16
 alignment = 2
 script = ExtResource("1_kfebs")
 
+[node name="Label" type="Label" parent="."]
+z_index = 1
+layout_mode = 2
+text = "gingoid"
+horizontal_alignment = 2
+
 [node name="HealthHeart" parent="." instance=ExtResource("2_2wxx4")]
 layout_mode = 2
 texture = SubResource("AtlasTexture_f8tks")

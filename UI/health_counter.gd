@@ -16,6 +16,7 @@ func _int_to_array(temp):
 	return arr
 
 func update_count(num : int):
+	$Label.text = str(num)
 	heart_count = num
 	var children = get_children()
 	if len(children) != heart_count: alter_hp_count(heart_count)

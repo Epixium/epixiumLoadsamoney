@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3yod72qjrsp5"]
+[gd_scene load_steps=4 format=3 uid="uid://d3yod72qjrsp5"]
 
+[ext_resource type="Script" path="res://title_screen.gd" id="1_v44ia"]
 [ext_resource type="Texture2D" uid="uid://86ls07w20013" path="res://Player/Sprites/crawl.png" id="2_ifa00"]
 [ext_resource type="PackedScene" uid="uid://c6t2voml0xwid" path="res://UI/UI Helpers/scene_button.tscn" id="3_ypj4y"]
 
@@ -10,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_v44ia")
 
 [node name="epium" type="TextureRect" parent="."]
 layout_mode = 1
@@ -70,3 +72,11 @@ scene = "res://retro_land.tscn"
 layout_mode = 2
 text = "play the... settings..?"
 scene = "res://settings.tscn"
+
+[node name="Button" type="Button" parent="Important/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 32
+text = "play the... leave-- okay i see how it is"
+
+[connection signal="pressed" from="Important/VBoxContainer/Button" to="." method="_on_button_pressed"]
