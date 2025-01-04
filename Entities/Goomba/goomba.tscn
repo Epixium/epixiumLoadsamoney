@@ -93,23 +93,25 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_giire"]
-size = Vector2(24, 17)
+size = Vector2(41, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yds80"]
-size = Vector2(20, 8)
+size = Vector2(30, 12)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j5wqx"]
+size = Vector2(30, 30)
 
-[node name="Goomba" type="CharacterBody2D"]
+[node name="Goomba" type="CharacterBody2D" node_paths=PackedStringArray("ITimer")]
 collision_layer = 4
-collision_mask = 3
+collision_mask = 2
 script = ExtResource("1_17q3i")
+ITimer = NodePath("I-Timer")
 
 [node name="PivotPoint" type="Marker2D" parent="."]
 position = Vector2(0, -10)
 
 [node name="Sprite" type="Sprite2D" parent="PivotPoint"]
-position = Vector2(0, -13)
+position = Vector2(0, -6)
 texture = ExtResource("2_8ybhp")
 hframes = 6
 
@@ -122,20 +124,27 @@ libraries = {
 collision_layer = 64
 
 [node name="Collision" type="CollisionShape2D" parent="HurtArea"]
-position = Vector2(0, -8.5)
+position = Vector2(-0.5, -12)
 shape = SubResource("RectangleShape2D_giire")
 debug_color = Color(0.994312, 0, 0.224103, 0.42)
 
-[node name="StompArea" type="Area2D" parent="."]
+[node name="DamageArea" type="Area2D" parent="."]
 position = Vector2(0, -21)
 collision_layer = 64
 
-[node name="Collision" type="CollisionShape2D" parent="StompArea"]
+[node name="Collision" type="CollisionShape2D" parent="DamageArea"]
+position = Vector2(0, -9)
 shape = SubResource("RectangleShape2D_yds80")
 debug_color = Color(0.689621, 0.498406, 1.92523e-07, 0.42)
 
 [node name="Collision" type="CollisionShape2D" parent="."]
-position = Vector2(0, -10)
+position = Vector2(0, -15)
 shape = SubResource("RectangleShape2D_j5wqx")
 
+[node name="I-Timer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
 [connection signal="body_entered" from="HurtArea" to="." method="_on_hurt_area_body_entered"]
+[connection signal="body_entered" from="DamageArea" to="." method="_on_damage_area_body_entered"]
+[connection signal="timeout" from="I-Timer" to="." method="_on_i_timer_timeout"]
